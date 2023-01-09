@@ -1,4 +1,4 @@
-# functions for playing audio file and microphone input to virtual input device
+# functions for playing audio file and input audio device sound to output audio device
 
 
 """imports"""
