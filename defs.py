@@ -18,7 +18,7 @@ import numpy as np
 def audio_file_stream(file_path, device_index:int, sound_volume:float, frames_per_buffer:int=1024):
     """
     function for playing one audio file to some output device
-    :param file_path: string or list of strings with paths to .mp3 audio files
+    :param file_path: string or list of strings with paths to .mp3 or .wav audio files
     :param device_index: index of target output device
     :param sound_volume: value in dBs for changing volume of streaming sound
     :param frames_per_buffer: stream frames per buffer
@@ -57,13 +57,14 @@ def audio_file_stream(file_path, device_index:int, sound_volume:float, frames_pe
 
 
 # stream sound from input device to output device
-def device_to_device_stream(input_device_index:int, output_device_index:int, input_read_rate:float,
-                        rate:int=44100, channels:int=2, frames_per_buffer:int=1024, format=pyaudio.paInt16):
+def device_to_device_stream(input_device_index:int, output_device_index:int, input_read_rate:float, sound_volume:float=1.0,
+                        rate:int=44100, channels:int=2, frames_per_buffer:int=1024, format=pyaudio.paFloat32):
     """
     stream sound from input device to output device
     :param input_device_index: index of input device
     :param output_device_index: index of output device
     :param input_read_rate: read every int(input_read_rate*rate) of input device waves and write to output
+    :param sound_volume: multiplier of streaming sound volume
     :param rate: stream audio rate
     :param channels: stream audio channels
     :param frames_per_buffer: stream audio frames per buffer
@@ -82,10 +83,13 @@ def device_to_device_stream(input_device_index:int, output_device_index:int, inp
 
     # read every int(input_read_rate*rate) of input device waves and write to output device
     while True:
-        # read batch of audio input and write to output
-        stream.write(frames=stream.read(num_frames=int(input_read_rate * rate)))
+        # read batch of audio input
+        audio_batch = stream.read(num_frames=int(input_read_rate * rate))
+        # change sound volume
+        audio_batch = np.frombuffer(audio_batch, dtype="float32") * sound_volume
+        #  write to output
+        stream.write(frames=audio_batch.tobytes())
 
-
-
-
-
+        
+        
+        
