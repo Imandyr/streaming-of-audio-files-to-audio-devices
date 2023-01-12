@@ -22,16 +22,10 @@ if __name__ == '__main__':
     input_index = pa.get_default_input_device_info()["index"]
     output_index = pa.get_default_output_device_info()["index"]
 
-    # run stream of test audio file to default output device
-    process = mp.Process(target=audio_file_stream, args=(["test_1.mp3"], output_index, -20))
+    # run stream of audio file to output device
+    process = mp.Process(target=audio_file_stream, args=(["test_1.mp3"], output_index, 0.5))
     process.start()
 
-    # run stream of default input device to default output device
-    process = mp.Process(target=device_to_device_stream, args=(input_index, output_index, 0.05))
+    # run stream of microphone input to output device
+    process = mp.Process(target=device_to_device_stream, args=(input_index, output_index, 0.05, 0.5))
     process.start()
-
-
-
-
-
-
