@@ -33,8 +33,11 @@ def audio_file_stream(file_path, device_index:int, sound_volume:float, frames_pe
 
         # load .mp3 file, convert to .wav file
         if not os.path.exists(f"{path[:-4]}.wav"):
-            sound = pydub.AudioSegment.from_mp3(path)
-            sound.export(f"{path[:-4]}.wav", format="wav")
+            if path[-4:] == ".mp3":
+                sound = pydub.AudioSegment.from_mp3(path)
+                sound.export(f"{path[:-4]}.wav", format="wav")
+            else:
+                logger.error("audio file extension is not '.mp3' or '.wav'")
 
         # load audio in .wav file
         wav_file = pydub.AudioSegment.from_wav(f"{path[:-4]}.wav")
